@@ -9,9 +9,23 @@ class blockchain(object):
         #新しいブロックチェーンを作り、チェーンに加える
         pass
 
-    def new_transaction(self):
-        #新しいトランザクションをリストに加える
-        pass
+    def new_transaction(self,sender,recipient,amount):
+        """
+        新しいトランザクションをリストに加える
+        
+        次に発掘されるブロックに加える新しいトランザクションを作る
+        :param sender: <str> 送信者のアドレス
+        :param recilient: <str> 受信者のアドレス
+        :param amount: <int> 量
+        :return: <int> このトランザクションを含めたブロックのアドレス
+        """
+
+        self.currentTrunsactions.append({
+            "sender":sender,
+            "recipient":recipient,
+            "amount":amount,
+        })
+        return self.last_block["index"]+1
 
     @staticmethod
     def hash(block):
