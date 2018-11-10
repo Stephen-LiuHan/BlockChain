@@ -1,13 +1,39 @@
 #coding UTF-8#
 
+import hashlib
+import json
+from time import time
+
 class blockchain(object):
     def __init__(self):
         self.chain = []
         self.currentTrunsactions = []
 
-    def new_block(self):
-        #新しいブロックチェーンを作り、チェーンに加える
-        pass
+        #ジェネシスブロックを作る
+        self.new_block(proof=100,previous_hash=1)
+
+    def new_block(self,proof,previous_hash=None):
+        """
+        新しいブロックチェーンを作り、チェーンに加える
+        
+        :param proof: <int> プルーフ・オブ・ワークから得られるプルーフ
+        :param previous_hash: (オプション)<str> 前のブロックからのハッシュ
+        :return: <dict> 新しいブロック
+        """
+        
+        block = {
+            'index' = len(self.chain) - 1,
+            'time_stamp' = time(),
+            'transaction' = self.currentTrunsactions,
+            'proof' = proof,
+            'previous_hash' : previous_hash or self.hash(self.chain[-1]),
+        }
+
+        #現在のトランザクションリストをリセット
+        self.currentTrunsactions=[]
+
+        self.chain.append(block)
+        return block
 
     def new_transaction(self,sender,recipient,amount):
         """
@@ -29,10 +55,18 @@ class blockchain(object):
 
     @staticmethod
     def hash(block):
-        #ブロックをハッシュ化する
-        pass
+        """
+        ブロックをハッシュ化する
+        
+        ブロックのSHA-256ハッシュを作る
+        :param block: <dick> ブロック
+        :return: <str> ハッシュ値
+        """
+        #ディクショナリがソートされてるものとし、ハッシュの一貫性を保つ
+        block_string = json.dumps(block,sort_keys=True).encode
+        return hashlib.sha256(block_string).hexdigest()
 
     @property
     def last_block(self):
         #チェーンの最後のブロックを返す
-        pass
+        return self.chain[-1]
