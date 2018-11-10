@@ -22,10 +22,10 @@ class blockchain(object):
         """
         
         block = {
-            'index' = len(self.chain) - 1,
-            'time_stamp' = time(),
-            'transaction' = self.currentTrunsactions,
-            'proof' = proof,
+            'index' : len(self.chain) - 1,
+            'time_stamp' : time(),
+            'transaction' : self.currentTrunsactions,
+            'proof' : proof,
             'previous_hash' : previous_hash or self.hash(self.chain[-1]),
         }
 
