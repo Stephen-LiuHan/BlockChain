@@ -3,6 +3,7 @@
 import hashlib
 import json
 from time import time
+from uuid import uuid4
 
 class blockchain(object):
     def __init__(self):
@@ -70,3 +71,30 @@ class blockchain(object):
     def last_block(self):
         #チェーンの最後のブロックを返す
         return self.chain[-1]
+
+    def proof_of_work(self,last_proof):
+        """
+        シンプルなプルーフ・オブ・ワークの説明-
+        - hash(p'p)の最初の４つが0となるようなpを探す
+        - p'は前のブロックのプルーフ値　pは新しいブロックのプルーフ
+        :param last_proof: <int> 前のブロックのプルーフ
+        :return: <int>
+        """
+
+        proof = 0
+        while self.valid_proof(last_proof,proof) is False:
+            proof+=1
+            
+        return proof
+
+    @staticmethod
+    def valid_proof(last_proof,proof):
+        """
+        プルーフが正しいか確認する:hash(last_proof,proof)の上位4つが０になっているか
+        :param last_proof: <int> 前のプルーフ
+        :param proof: <int> 現在のプルーフ
+        :return: <bool> 正しければTrue、そうでなければFalse
+        """
+        guess = f'{last_proof}{proof}'.encode()
+        guess_hash = hashlib.sha256(guess).hexdigest()
+        return guess_hash[:4] == "0000"
