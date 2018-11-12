@@ -2,10 +2,13 @@
 
 import hashlib
 import json
+from textwrap import dedent
 from time import time
 from uuid import uuid4
 
-class blockchain(object):
+from flask import Flask
+
+class Blockchain(object):
     def __init__(self):
         self.chain = []
         self.currentTrunsactions = []
@@ -98,3 +101,11 @@ class blockchain(object):
         guess = f'{last_proof}{proof}'.encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
         return guess_hash[:4] == "0000"
+
+    #ノードを作る
+    app = Flask(__name__)
+
+    #このノードのグローバルにユニークなアドレスを作る
+    node_indetifire = str(uuid4()).replace('-','')
+
+    blockchain = Blockchain()
