@@ -108,4 +108,5 @@ class Blockchain(object):
     #このノードのグローバルにユニークなアドレスを作る
     node_indetifire = str(uuid4()).replace('-','')
 
+
     blockchain = Blockchain()
