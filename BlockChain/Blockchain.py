@@ -45,7 +45,7 @@ class Blockchain(object):
         
         次に発掘されるブロックに加える新しいトランザクションを作る
         :param sender: <str> 送信者のアドレス
-        :param recilient: <str> 受信者のアドレス
+        :param recipient: <str> 受信者のアドレス
         :param amount: <int> 量
         :return: <int> このトランザクションを含めたブロックのアドレス
         """
@@ -114,7 +114,18 @@ blockchain = Blockchain()
 # メソッドはPOSTで、/transactions/newエンドポイントを作る。メソッドはPOSTなのでデータを送信する
 @app.route ('/transactions/new',methods=['POST'])
 def new_transaction():
-    return '新しいトランザクションを追加する'
+    values = request.get_json()
+
+
+    #POSTされたデータに必要なデータがあるか
+    required = ['sender','recipient','amount']
+    if not all(k in values for k in required) :
+        return 'MISSING VALUES', 400
+    
+    #新しいトランザクションを作る
+    index = blockchain.new_transaction(values['sender'],values['recipient'],values['amount'])
+    response = {'message' : f'トランザクションはブロック{index}に追加されました'}
+    return jsonify(response),201
 
 # メソッドはGETで、/mineエンドポイントを作る
 @app.route('/mine',methods=['GET'])
