@@ -102,11 +102,31 @@ class Blockchain(object):
         guess_hash = hashlib.sha256(guess).hexdigest()
         return guess_hash[:4] == "0000"
 
-    #ノードを作る
-    app = Flask(__name__)
+#ノードを作る
+app = Flask(__name__)
 
-    #このノードのグローバルにユニークなアドレスを作る
-    node_indetifire = str(uuid4()).replace('-','')
+#このノードのグローバルにユニークなアドレスを作る
+node_indetifire = str(uuid4()).replace('-','')
 
+#ブロックチェーンクラスをインスタンス化　
+blockchain = Blockchain()
 
-    blockchain = Blockchain()
+@app.route ('/transactions/new',methods=['POST'])
+def new_transactions():
+    return '新しいトランザクションを追加する'
+
+@app.route('/mine',methods=['GET'])
+def mine():
+    return '新しいブロックを採掘します'
+
+@app.route('/chain',methods=['GET'])
+def full_chain():
+    response = {
+        'chain' : blockchain.chain,
+        'length': len(blockchain.chain)
+    }
+    return jsonify(response), 200
+
+# port5000でサーバを起動
+if __name__=='__main__':
+    app.run(host='0.0.0.0',port=5000)
