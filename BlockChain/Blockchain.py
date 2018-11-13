@@ -130,7 +130,30 @@ def new_transaction():
 # メソッドはGETで、/mineエンドポイントを作る
 @app.route('/mine',methods=['GET'])
 def mine():
-    return '新しいブロックを採掘します'
+    #次のプルーフを見つけるためプルーフ・オブ・ワークアルゴリズムを使用する
+    last_block = blockchain.last_block
+    last_proof = last_block['proof']
+    proof = blockchain.proof_of_work(last_proof)
+
+    #プルーフを発掘したことに対する報酬を得る
+    #送信者の欄は発掘者が新しいコインを発掘したことを表すために"0"とする
+    blockchain.new_transaction(
+        sender="0",
+        recipient=node_indetifire,
+        amount=1,
+    )
+
+    #チェーンに新しいブロックを加えることで、新しいブロックを採掘する
+    block = blockchain.new_block(proof)
+
+    response = {
+        'message' : '新しいブロックを採掘しました',
+        'index' : block['index'],
+        'transactions' : block['transactions'],
+        'proof' : block['proof'],
+        'previous_hash' : block['previous_hash'],
+    }
+    return jsonify(response),200
 
 # メソッドはGETで、フルのブロックチェーンをリターンする/chainエンドポイントを作る
 @app.route('/chain',methods=['GET'])
