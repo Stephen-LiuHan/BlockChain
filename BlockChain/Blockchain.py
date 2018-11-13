@@ -111,14 +111,17 @@ node_indetifire = str(uuid4()).replace('-','')
 #ブロックチェーンクラスをインスタンス化　
 blockchain = Blockchain()
 
+# メソッドはPOSTで、/transactions/newエンドポイントを作る。メソッドはPOSTなのでデータを送信する
 @app.route ('/transactions/new',methods=['POST'])
-def new_transactions():
+def new_transaction():
     return '新しいトランザクションを追加する'
 
+# メソッドはGETで、/mineエンドポイントを作る
 @app.route('/mine',methods=['GET'])
 def mine():
     return '新しいブロックを採掘します'
 
+# メソッドはGETで、フルのブロックチェーンをリターンする/chainエンドポイントを作る
 @app.route('/chain',methods=['GET'])
 def full_chain():
     response = {
@@ -127,6 +130,6 @@ def full_chain():
     }
     return jsonify(response), 200
 
-# port5000でサーバを起動
+# port5000でサーバを起動する
 if __name__=='__main__':
     app.run(host='0.0.0.0',port=5000)
