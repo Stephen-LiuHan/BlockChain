@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import requests
 from textwrap import dedent
 from time import time
 from uuid import uuid4
@@ -69,6 +70,36 @@ class Blockchain(object):
 
         parsed_url = urlparse(address)
         self.nodes.add(parsed_url.netloc)
+
+    def valid_chain(self,chain):
+        """
+        ブロックチェーンが正しいかを確認する
+
+        :param chain: <list>　ブロックチェーン
+        :return: <bool> Trueだと正しく、Falseだと不正
+        """
+        last_block = chain[0]
+        curren_index = 1
+
+        while curren_index < len(chain):
+            block = chain[curren_index]
+
+            print(f'{last_block}')
+            print(ff'{block}')
+            print("\n----------------------\n")
+
+            #ブロックのハッシュが正しいかを確認
+            if block['previous_hash'] != self.hash(last_block):
+                return False
+
+            #プルーフ・オブ・ワークが正しいか
+            if self.valid_proof(last_block['proof'],block['proof']) :
+                return False
+            
+            last_block=block
+            curren_index+=1
+
+        return True
 
     @staticmethod
     def hash(block):
