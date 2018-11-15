@@ -5,6 +5,7 @@ import json
 from textwrap import dedent
 from time import time
 from uuid import uuid4
+from urllib.parse import urlparse
 
 from flask import Flask, jsonify, request
 
@@ -12,6 +13,8 @@ class Blockchain(object):
     def __init__(self):
         self.chain = []
         self.currentTrunsactions = []
+
+        self.nodes=set()
 
         #ジェネシスブロックを作る
         self.new_block(proof=100,previous_hash=1)
@@ -56,6 +59,16 @@ class Blockchain(object):
             "amount":amount,
         })
         return self.last_block["index"]+1
+
+    def register_node(self,address):
+        """
+        ノードリストに新しいノードを加える
+        :param address: <str> ノードのアドレス　例："http://http://192.168.0.5:5000"
+        :return: None
+        """
+
+        parsed_url = urlparse(address)
+        self.nodes.add(parsed_url.netloc)
 
     @staticmethod
     def hash(block):
