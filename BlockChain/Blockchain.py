@@ -1,4 +1,4 @@
-#coding UTF-8#
+#coding : UTF-8
 
 import hashlib
 import json
@@ -67,7 +67,7 @@ class Blockchain(object):
         :return: <str> ハッシュ値
         """
         #ディクショナリがソートされてるものとし、ハッシュの一貫性を保つ
-        block_string = json.dumps(block,sort_keys=True).encode
+        block_string = json.dumps(block, sort_keys=True).encode()
         return hashlib.sha256(block_string).hexdigest()
 
     @property
@@ -118,9 +118,9 @@ def new_transaction():
 
 
     #POSTされたデータに必要なデータがあるか
-    required = ['sender','recipient','amount']
-    if not all(k in values for k in required) :
-        return 'MISSING VALUES', 400
+    required = ['sender', 'recipient', 'amount']
+    if not all(k in values for k in required):
+        return 'Missing values', 400
     
     #新しいトランザクションを作る
     index = blockchain.new_transaction(values['sender'],values['recipient'],values['amount'])
@@ -149,7 +149,7 @@ def mine():
     response = {
         'message' : '新しいブロックを採掘しました',
         'index' : block['index'],
-        'transactions' : block['transactions'],
+        'transactions' : block['transaction'],
         'proof' : block['proof'],
         'previous_hash' : block['previous_hash'],
     }
@@ -166,4 +166,4 @@ def full_chain():
 
 # port5000でサーバを起動する
 if __name__=='__main__':
-    app.run(host='0.0.0.0',port=5000)
+    app.run(host='localhost',port=5000)
