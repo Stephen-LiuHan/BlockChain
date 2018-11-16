@@ -85,7 +85,7 @@ class Blockchain(object):
             block = chain[curren_index]
 
             print(f'{last_block}')
-            print(ff'{block}')
+            print(f'{block}')
             print("\n----------------------\n")
 
             #ブロックのハッシュが正しいかを確認
