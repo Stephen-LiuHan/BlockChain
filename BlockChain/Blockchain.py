@@ -101,6 +101,38 @@ class Blockchain(object):
 
         return True
 
+    def resolve_conflicts(self):
+        """
+        ネットワーク上の最も長いチェーンの最も長いチェーンで自らのチェーンを置き換える
+        :return: <bool> 置き換えられた際にTrue,そうでなければfalse
+        """
+
+        neighbours = self.nodes
+        new_chain = None
+
+        #自らのチェーンの長さでとりあえず初期化
+        max_length = len(self.chain)
+        
+        #他のすべてのチェーンを調べる
+        for node  in neighbours :
+            response = requests.get(f'http://{node}/chain')
+
+            if response.status_code == 200 :
+                length = response.json()['length']
+                chain = response.json()['chain']
+
+                #そのチェーンがより長いか、そしてチェーン自体が有効かを確認
+                if length > max_length and self.valid_chain(chain) :
+                    max_length = length
+                    new_chain = chain
+        
+        #自分のチェーンより長いものがあればそれで更新
+        if new_chain :
+            self.chain = new_chain
+            return True
+        
+        return False 
+
     @staticmethod
     def hash(block):
         """
